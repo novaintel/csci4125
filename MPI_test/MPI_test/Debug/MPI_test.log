@@ -1,0 +1,21 @@
+﻿Build started 2014-01-13 6:15:29 PM.
+     1>Project "C:\Users\James\Documents\code\c\csci4125\MPI_test\MPI_test\MPI_test.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin" /I"C:\Program Files (x86)\MPICH2\include" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP Greetings.cpp
+         Greetings.cpp
+     1>Greetings.cpp(5): warning #1009: return type "int" omitted in declaration of function "main"
+           main(int argc, char* argv []){
+           ^
+         
+       Link:
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\MPICH2\lib" cxx.lib mpi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\MPI_test.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.lib" /MACHINE:X86 Debug\Greetings.obj
+         xilink: executing 'link'
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\MPICH2\lib" cxx.lib mpi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\MPI_test.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.lib" /MACHINE:X86 Debug\Greetings.obj
+         xilink: executing 'link'
+         MPI_test.vcxproj -> C:\Users\James\Documents\code\c\csci4125\MPI_test\Debug\MPI_test.exe
+     1>Done Building Project "C:\Users\James\Documents\code\c\csci4125\MPI_test\MPI_test\MPI_test.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.82
