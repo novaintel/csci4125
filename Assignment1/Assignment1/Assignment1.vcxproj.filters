@@ -21,5 +21,8 @@
     <ClCompile Include="lifeGame_MPI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="temp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
