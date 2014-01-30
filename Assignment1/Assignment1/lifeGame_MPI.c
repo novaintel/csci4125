@@ -3,6 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void printLiveCell(int **board, int boardLength){
+	/*  Iterations are done; sum the number of live cells */
+	int i, j, isum = 0;
+	for (i = 1; i <= boardLength; i++){
+		for (j = 1; j <= boardLength; j++){
+			isum = isum + board[i][j];
+		}
+	}
+	printf("\nNumber of live cells = %d\n", isum);
+}
 
 void randomGame(int** matrix, int** temp, int matrix_size, int mysize){
 	/* Initialize the boundaries of the life matrix */
@@ -16,12 +26,12 @@ void randomGame(int** matrix, int** temp, int matrix_size, int mysize){
 	for (i = 1; i <= mysize; i++)  {
 		for (j = 1; j <= matrix_size; j++)
 			x = rand() / ((float) RAND_MAX + 1);
-			if (x<0.5){
-				matrix[i][j] = 0;
-			}
-			else {
-				matrix[i][j] = 1;
-			}
+		if (x<0.5){
+			matrix[i][j] = 0;
+		}
+		else {
+			matrix[i][j] = 1;
+		}
 	}
 }
 
@@ -107,21 +117,29 @@ void playRoundOfLife(int numCycles, int boardSideLength, MPI_Comm comm){
 		board = tempBoard;
 	}
 
-
+	printLiveCell(board, boardSideLength);
 }
 
-void startGame(int iters){
-	
-}
 
-int main(char** argv, int argc){
-
-	int processRank, boardSideLength, iters;
+int main(int argc, char* argv[]){
+	int my_rank;
+	int p;
+	int source;
+	int dest;
+	int tag = 0;
+	char message[100];
+	int boardSideLength;
+	int iters;
+	MPI_Status status;
 
 	MPI_Init(&argc, &argv);
-	MPI_Comm_rank(MPI_COMM_WORLD, &processRank);
 
-	if (processRank == 0) {
+	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+	MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+
+	if (my_rank == 0) {
 		printf("Matrix Size : ");
 		scanf("%d", &boardSideLength);
 		printf("Iterations : ");
@@ -131,4 +149,44 @@ int main(char** argv, int argc){
 	MPI_Bcast(&boardSideLength, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&iters, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+	playRoundOfLife(iters, boardSideLength, MPI_COMM_WORLD);
+
+	MPI_Finalize();
+
 }
+
+
+/*
+#include <stdio.h>
+#include <string.h>
+#include "mpi.h"
+
+int main(int argc, char* argv[]){
+int my_rank;
+int p;
+int source;
+int dest;
+int tag = 0;
+char message[100];
+MPI_Status status;
+
+MPI_Init(&argc, &argv);
+
+MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+if (my_rank != 0){
+sprintf(message, "Greetings from process %d!", my_rank);
+dest = 0;
+MPI_Send(message, strlen(message) + 1, MPI_CHAR, dest, tag, MPI_COMM_WORLD);
+
+}
+else {
+for (source = 1; source < p; source++){
+MPI_Recv(message, 100, MPI_CHAR, source, tag, MPI_COMM_WORLD, &status);
+printf("%s\n", message);
+}
+}
+MPI_Finalize();
+}*/
