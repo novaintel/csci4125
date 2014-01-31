@@ -84,9 +84,8 @@ void copyArray(int **oldd, int **newd, int size){
 
 void lifeGame(int size, int gens, string *rs){
 
-	printf("Just a Test\n");
-
 	int i, j, n, ni, nj, isum;
+	int copyArrayTime, checkBoardCenterTime, checkBoardBoundaryTime;
 	int **oldd, **newd;
 	float x;
 	FILE *outFile;
@@ -146,8 +145,7 @@ void lifeGame(int size, int gens, string *rs){
 
 		finish = clock() - start;
 		interval = finish / (double) CLOCKS_PER_SEC;
-		intm = to_string(interval);
-		*rs = *rs + "," + intm;
+		checkBoardBoundaryTime += interval;
 
 		start = clock();
 
@@ -155,8 +153,7 @@ void lifeGame(int size, int gens, string *rs){
 
 		finish = clock() - start;
 		interval = finish / (double) CLOCKS_PER_SEC;
-		intm = to_string(interval);
-		*rs = *rs + "," + intm;
+		checkBoardCenterTime += interval;
 
 
 		start = clock();
@@ -165,9 +162,18 @@ void lifeGame(int size, int gens, string *rs){
 		
 		finish = clock() - start;
 		interval = finish / (double) CLOCKS_PER_SEC;
-		intm = to_string(interval);
-		*rs = *rs + "," + intm;
+		copyArrayTime += interval;
+		
 	}
+
+	intm = to_string(checkBoardBoundaryTime);
+	*rs = *rs + "," + intm;
+
+	intm = to_string(checkBoardCenterTime);
+	*rs = *rs + "," + intm;
+
+	intm = to_string(copyArrayTime);
+	*rs = *rs + "," + intm;
 
 	/*  Iterations are done; sum the number of live cells */
 	start = clock();
