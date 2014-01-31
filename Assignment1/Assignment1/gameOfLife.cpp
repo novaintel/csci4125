@@ -13,9 +13,80 @@ Conway Game of Life
 
 using namespace std;
 
+void checkBoardBoundary(int **oldd, int size){
+	int i, j;
+
+	/* corner boundary conditions */
+	oldd[0][0] = oldd[size][size];
+	oldd[0][size + 1] = oldd[size][1];
+	oldd[size + 1][size + 1] = oldd[1][1];
+	oldd[size + 1][0] = oldd[1][size];
+
+	/* left-right boundary conditions */
+
+	for (i = 1; i <= size; i++){
+		oldd[i][0] = oldd[i][size];
+		oldd[i][size + 1] = oldd[i][1];
+	}
+
+	/* top-bottom boundary conditions */
+
+	for (j = 1; j <= size; j++){
+		oldd[0][j] = oldd[size][j];
+		oldd[size + 1][j] = oldd[1][j];
+	}
+
+
+}
+
+void checkBoardCenter(int **oldd, int **newd, int size){
+	int i, j, im, ip, jm, jp, nsum;
+
+	for (i = 1; i <= size; i++){
+		for (j = 1; j <= size; j++){
+			im = i - 1;
+			ip = i + 1;
+			jm = j - 1;
+			jp = j + 1;
+
+			nsum = oldd[im][jp] + oldd[i][jp] + oldd[ip][jp]
+				+ oldd[im][j] + oldd[ip][j]
+				+ oldd[im][jm] + oldd[i][jm] + oldd[ip][jm];
+
+			switch (nsum){
+
+			case 3:
+				newd[i][j] = 1;
+				break;
+
+			case 2:
+				newd[i][j] = oldd[i][j];
+				break;
+
+			default:
+				newd[i][j] = 0;
+			}
+		}
+	}
+
+}
+
+void copyArray(int **oldd, int **newd, int size){
+	int i, j;
+
+	for (i = 1; i <= size; i++){
+		for (j = 1; j <= size; j++){
+			oldd[i][j] = newd[i][j];
+		}
+	}
+
+}
+
 void lifeGame(int size, int gens, string *rs){
 
-	int i, j, n, im, ip, jm, jp, ni, nj, nsum, isum;
+	printf("Just a Test\n");
+
+	int i, j, n, ni, nj, isum;
 	int **oldd, **newd;
 	float x;
 	FILE *outFile;
@@ -67,73 +138,36 @@ void lifeGame(int size, int gens, string *rs){
 	intm = to_string(interval);
 	*rs = *rs + "," + intm;
 
-
-	/*  time steps */
-	start = clock();
-
 	for (n = 0; n<gens; n++){
 
-		/* corner boundary conditions */
-		oldd[0][0] = oldd[size][size];
-		oldd[0][size + 1] = oldd[size][1];
-		oldd[size + 1][size + 1] = oldd[1][1];
-		oldd[size + 1][0] = oldd[1][size];
+		start = clock();
 
-		/* left-right boundary conditions */
+		checkBoardBoundary(oldd, size);
 
-		for (i = 1; i <= size; i++){
-			oldd[i][0] = oldd[i][size];
-			oldd[i][size + 1] = oldd[i][1];
-		}
+		finish = clock() - start;
+		interval = finish / (double) CLOCKS_PER_SEC;
+		intm = to_string(interval);
+		*rs = *rs + "," + intm;
 
-		/* top-bottom boundary conditions */
+		start = clock();
 
-		for (j = 1; j <= size; j++){
-			oldd[0][j] = oldd[size][j];
-			oldd[size + 1][j] = oldd[1][j];
-		}
+		checkBoardCenter(oldd, newd, size);
 
-		for (i = 1; i <= size; i++){
-			for (j = 1; j <= size; j++){
-				im = i - 1;
-				ip = i + 1;
-				jm = j - 1;
-				jp = j + 1;
+		finish = clock() - start;
+		interval = finish / (double) CLOCKS_PER_SEC;
+		intm = to_string(interval);
+		*rs = *rs + "," + intm;
 
-				nsum = oldd[im][jp] + oldd[i][jp] + oldd[ip][jp]
-					+ oldd[im][j] + oldd[ip][j]
-					+ oldd[im][jm] + oldd[i][jm] + oldd[ip][jm];
 
-				switch (nsum){
+		start = clock();
 
-				case 3:
-					newd[i][j] = 1;
-					break;
-
-				case 2:
-					newd[i][j] = oldd[i][j];
-					break;
-
-				default:
-					newd[i][j] = 0;
-				}
-			}
-		}
-
-		/* copy new state into old state */
-
-		for (i = 1; i <= size; i++){
-			for (j = 1; j <= size; j++){
-				oldd[i][j] = newd[i][j];
-			}
-		}
+		copyArray(oldd, newd, size);
+		
+		finish = clock() - start;
+		interval = finish / (double) CLOCKS_PER_SEC;
+		intm = to_string(interval);
+		*rs = *rs + "," + intm;
 	}
-
-	finish = clock() - start;
-	interval = finish / (double) CLOCKS_PER_SEC;
-	intm = to_string(interval);
-	*rs = *rs + "," + intm;
-
 
 	/*  Iterations are done; sum the number of live cells */
 	start = clock();
