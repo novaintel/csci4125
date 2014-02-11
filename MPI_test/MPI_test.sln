@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MPI_test", "MPI_test\MPI_test.vcxproj", "{C87566BB-F087-4B05-A9A3-532E945310DC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MPI_test", "MPI_test\MPI_test.vcxproj", "{996AD605-0E23-494B-A048-71621E7EBEC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C87566BB-F087-4B05-A9A3-532E945310DC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C87566BB-F087-4B05-A9A3-532E945310DC}.Debug|Win32.Build.0 = Debug|Win32
-		{C87566BB-F087-4B05-A9A3-532E945310DC}.Release|Win32.ActiveCfg = Release|Win32
-		{C87566BB-F087-4B05-A9A3-532E945310DC}.Release|Win32.Build.0 = Release|Win32
+		{996AD605-0E23-494B-A048-71621E7EBEC2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{996AD605-0E23-494B-A048-71621E7EBEC2}.Debug|Win32.Build.0 = Debug|Win32
+		{996AD605-0E23-494B-A048-71621E7EBEC2}.Release|Win32.ActiveCfg = Release|Win32
+		{996AD605-0E23-494B-A048-71621E7EBEC2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

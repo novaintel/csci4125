@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gameOfLife.cpp" />
+    <ClCompile Include="lifeGame_MPI.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9560AC89-DA50-4976-9617-1942F7A62BD4}</ProjectGuid>

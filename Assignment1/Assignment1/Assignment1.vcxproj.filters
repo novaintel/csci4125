@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gameOfLife.cpp">
+    <ClCompile Include="lifeGame_MPI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
