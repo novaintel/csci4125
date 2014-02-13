@@ -1,17 +1,17 @@
-﻿Build started 2014-02-12 3:59:01 PM.
-     1>Project "C:\Users\James\Documents\code\school\csci4125\Assignment2\Assignment2\Assignment2.vcxproj" on node 2 (Build target(s)).
+﻿Build started 2014-02-12 7:29:07 PM.
+     1>Project "C:\Users\James\Documents\code\School\csci4125\Assignment2\Assignment2\Assignment2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D _MBCS /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Qopenmp /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC golOpenMp.c
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"D:\DevTools\Microsoft Visual Studio 12.0\VC\bin" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D _MBCS /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Qopenmp /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC golOpenMp.c
          golOpenMp.c
        Link:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.lib" /MACHINE:X86 Debug\golOpenMp.obj
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.lib" /MACHINE:X86 Debug\golOpenMp.obj
          xilink: executing 'link'
        LinkEmbedManifest:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.lib" /MACHINE:X86 Debug\golOpenMp.obj
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.lib" /MACHINE:X86 Debug\golOpenMp.obj
          xilink: executing 'link'
-         Assignment2.vcxproj -> C:\Users\James\Documents\code\school\csci4125\Assignment2\Debug\Assignment2.exe
-     1>Done Building Project "C:\Users\James\Documents\code\school\csci4125\Assignment2\Assignment2\Assignment2.vcxproj" (Build target(s)).
+         Assignment2.vcxproj -> C:\Users\James\Documents\code\School\csci4125\Assignment2\Debug\Assignment2.exe
+     1>Done Building Project "C:\Users\James\Documents\code\School\csci4125\Assignment2\Assignment2\Assignment2.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.00
+Time Elapsed 00:00:00.53
