@@ -1,12 +1,8 @@
-//Imports
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <omp.h>
 #include <string.h>
 #include <time.h>
-#include <sys/time.h>
-/* ------------------Begin - Global Variables------------------ */
 
 // Boards dimension values
 unsigned int width;
@@ -15,203 +11,50 @@ unsigned int height;
 // Number of threads
 unsigned int nthreads;
 
-// Program has two arrays in order to save each state
-// The needed memory is allocated in main due to dimension values
+//Number of rounds
+unsigned int rounds;
+
 int **workingBoard;
 int **finalBoard;
 
 // Input filename
 char *filename;
 
-// Struct variables to measure execution time
-struct timeval t_start, t_end;
-
-// Init board with zeroes if default mode, or with random 0,1.
-void initialize_board(int **current);
-
-// Read the initial state of the board from a file in default mode.
-void read_file(int **current, char *file_name);
-
-/*
-Because the bounds remain unchanged and are not taken care
-in main procceding, we copy the region to the next state array.
-*/
-void copy_region(int **current, int **next);
-
-// Function to return the number of alive neighbors of the i,j cell.
-int adjacent_to(int **current, int i, int j);
-
-/*
-Main play function for the game of life.
-Takes as input two pointers for the arrays
-and the segment in which to apply the game.
-*/
-void play(int **current, int **next, int start, int finish);
-
-/* -----------------------Main Program---------------------- */
-int main(int argc, char *argv[])
+void initialize_board(int **curptr)
 {
-	// Pointers to handle arrays (current and next states).
-	// Temp is necessary to swap pointers
-	int **curptr, **nextptr, **temp;
-
-	// Necessary variables
-	int i, tid;
-	unsigned int start, finish;
-
-	// Init flags and variables
-	height = 0;
-	width = 0;
-	filename = NULL;
-
-	// Default value for number of threads is 1
-	nthreads = 1;
-
-	// Call argument check
-	if (arg_check(argc, argv) != 0)
-		return -1;
-
-	// Allocate the two arrays due to the given dimensions (default|user specified)
-	workingBoard = (int **) malloc(width*sizeof(int *));
-	
-	for (i = 0; i < width; i++){
-		workingBoard[i] = (int *) malloc(height*sizeof(int));
-	}
-
-	finalBoard = (int **) malloc(width*sizeof(int *));
-
-	for (i = 0; i < width; i++)
-	{
-		finalBoard[i] = (int *) malloc(height*sizeof(int));
-	}
-
-	// Init pointers to show to the relevant arrays
-	curptr = workingBoard;
-	nextptr = finalBoard;
-
-	// Init current array with zeroes or random values
-	// Attribute specified by default flag
-	initialize_board(curptr);
-
-	// If we have default dimensions read input state from file
-	read_file(curptr, filename);
-
-	// Copy the unchanged region cells
-	copy_region(curptr, nextptr);
-
-	// Relevant messages in case of bench mode
-	gettimeofday(&t_start, NULL);
-
-	/*------Parallel omp directive for compiler------
-	Array pointers are shared variables to all threads
-	ThreadID, and area bounds are private
-	Specify the number of threads given the user input
-	*/
-#pragma omp parallel shared(curptr, nextptr, temp, nthreads) private(tid, i, start, finish) num_threads(nthreads)
-	{
-		//Get thread number ID
-		tid = omp_get_thread_num();
-
-		//Specify the bounds
-		start = tid * (height / nthreads);
-		finish = start + (height / nthreads);
-
-		// Exclude extern cells
-		if (tid == 0) start++;
-		if (tid == nthreads - 1) finish = height - 1;
-
-		// Play game for 100 rounds
-		for (i = 0; i<100; i++)
-		{
-			// Each thread call play() with it's own bounds
-			play(curptr, nextptr, start, finish);
-
-			// Put barrier to ensure that each thread has finished the play before continue
-#pragma omp barrier
-
-			/*
-			The thread with ID=0 is responsible to swap the pointers and
-			print the board's status in each round.
-			ps: The screen prints are omitted in bench mode (bench_flag)
-			*/
-			if (tid == 0)
-			{
-
-				if (i != 0)
-				{	//Swap pointers
-					temp = curptr;
-					curptr = nextptr;
-					nextptr = temp;
-				}
-			}//End of critical
-
-			//One more barrier is needed in order to ensure
-			//that the pointers have been swapped before go to next round
-#pragma omp barrier
-
-		}// End of 100 play rounds for loop
-	}//end of parallel section
-
-	//Print stat in case of bench mode
-		gettimeofday(&t_end, NULL);
-		//printf("-----------Stats-----------\n");
-		//printf("Array Dimenstions  : %d x %d (Raws X Cols)\n", height, width);
-		//printf("Threads Number    : %d\n",nthreads);
-		//printf("Execution time(us): ");
-		printf("%ld\n", ((t_end.tv_sec * 1000000 + t_end.tv_usec) - (t_start.tv_sec * 1000000 + t_start.tv_usec)));
-		//printf("===============End of bench mode==============\n");
-
-	return 0;
-}
-/* ----------------------End of Main Program--------------------- */
-
-/* ------------------------Functions Code----------------------- */
-
-void initialize_board(int **curptr, int dflag)
-{
-	//If default flag init with zeroes, else with random 0,1 values
 	int i, j;
 
-	if (dflag)
-	{
-		for (i = 0; i<width; i++) for (j = 0; j<height; j++)
-			curptr[i][j] = 0;
-	}
-	else
-	{
-		for (i = 0; i<width; i++) for (j = 0; j<height; j++)
-			curptr[i][j] = rand() % 2;
-	}
+	for (i = 0; i<width; i++) for (j = 0; j<height; j++)
+		curptr[i][j] = 0;
 }
 
-void read_file(int **curptr, char *name)
+void read_file(int **curptr, char *name, int height, int width)
 {
-	//If default mode read initial state from file
-	FILE	*f;
+	FILE *f;
 	int	i, j;
-	char	s[100];
+	char s[100];
 
 	f = fopen(name, "r");
-	for (j = 0; j<DHEIGHT; j++)
+	for (j = 0; j<height; j++)
 	{
 
 		fgets(s, 100, f);
 
-		for (i = 0; i<DWIDTH; i++)
+		for (i = 0; i<width; i++)
 		{
 			curptr[i][j] = s[i] == 'x';
 		}
 	}
 	fclose(f);
-}//End of read_file()
+}
 
 void copy_region(int **curptr, int **nextptr)
 {
 	int i, j;
 	for (j = 0; j<height; j++)
-	for (i = 0; i<width; i++)
-	if ((i == 0) || (j == 0) || (j == height - 1) || (i == width - 1))
-		nextptr[i][j] = curptr[i][j];
+		for (i = 0; i<width; i++)
+			if ((i == 0) || (j == 0) || (j == height - 1) || (i == width - 1))
+				nextptr[i][j] = curptr[i][j];
 }
 
 int adjacent_to(int **curptr, int i, int j)
@@ -221,27 +64,20 @@ int adjacent_to(int **curptr, int i, int j)
 	count = 0;
 
 	// Examine all the neighbors
-	for (row = -1; row <= 1; row++)
-	for (col = -1; col <= 1; col++)
-	{
-		// exclude current cell from count
-		if (row || col)
-		if (curptr[i + row][j + col]) count++;
-		// we don't need to keep counting if the number is >3 (no change in behaviour)		
-		if (count>3)
-		{//break nested loops
-			break;
-			break;
+	for (row = -1; row <= 1 && count <= 3; row++)
+		for (col = -1; col <= 1 && count<=3; col++)
+		{
+			// exclude current cell from count
+			if (row || col)
+				if (curptr[i + row][j + col]) count++;
 		}
-	}
 	return count;
-}//End of adjacent_to()
+}
 
 void play(int **curptr, int **nextptr, int start, int finish)
 {
 	int i, j, alive;
 
-	// Exclude board region and apply for each cell the game's rules
 	for (i = 1; i<width - 1; i++) for (j = start; j<finish; j++)
 	{
 		alive = adjacent_to(curptr, i, j);
@@ -250,115 +86,101 @@ void play(int **curptr, int **nextptr, int start, int finish)
 		if (alive < 2) nextptr[i][j] = 0;
 		if (alive > 3) nextptr[i][j] = 0;
 	}
-}//End of play()
+}
 
-void print(int **curptr)
-{
-	int i, j;
-
-	for (j = 0; j<height; j++)
-	{
-
-		for (i = 0; i<width; i++)
-		{
-			printf("%c", curptr[i][j] ? 'x' : ' ');
-		}
-		printf("\n");
-	}
-}//End of print()
-
-/*
-In order to specify the behaviour of the program we check the passed
-arguments. We make the required checks and print relevant messages.
-The basic idea is that we have two modes. Play and bench modes.
-For more details read the relevant paragraph in the full report file.
-*/
-int arg_check(int argc, char *argv[])
+int cmdArgCheck(int argc, char *argv[])
 {
 	int opt_char;
-	if (argc == 1)
-	{
-		print_help();
+	if (argc == 1 || argc < 5){
 		return -1;
 	}
-	while ((opt_char = getopt(argc, argv, "n:h:w:f:b")) != -1)
-	{
-		switch (opt_char)
-		{
-		case 'n':
-			nthreads = atoi(optarg);
-			break;
-		case 'h':
-			height = atoi(optarg);
-			break;
-		case 'w':
-			width = atoi(optarg);
-			break;
-		case 'f':
-			filename = optarg;
-			break;
-		case 'b':
-			bench_flag = 1;
-			break;
-		default:
-			print_help();
-			break;
-		}
-	}
-	//In case of user given dimensions,
-	//check if both of them have been given
-	if (height != 0 && width == 0)
-	{
-		printf("Give width dimension too!\n");
-		printf("Or leave default.\n");
-		return -1;
-	}
-	else if (width != 0 && height == 0)
-	{
-		printf("Give length dimension too!\n");
-		printf("Or leave default.\n");
-		return -1;
-	}
-	// If all correct given disable default flag
-	else if (width != 0 && height != 0)
-	{
-		dflag = 0;
-		if (filename != NULL)
-		{
-			printf("\nWARNING!\n");
-			printf("Dimensions arguments have overscale default input file\n");
-			printf("Hit ENTER to continue.\n");
-			getchar();
-		}
-	}
-	// If default flag has not been disabled,
-	// assign default dimension to variables
-	if (dflag)
-	{
-		width = DWIDTH;
-		height = DHEIGHT;
+	nthreads = atoi(argv[1]);
+	rounds = atoi(argv[2]);
+	height = atoi(argv[3]);
+	width = atoi(argv[4]);
+	filename = argv[5];
 
-		//In default mode we need an input file for the initial state
-		//So check if it has been given, otherwise exit with message
-		if (filename == NULL)
-		{
-			printf("In default mode give input file too!\n");
-			printf("Program exited!\n\n");
-			return -1;
-		}
+	if (height != 0 || width != 0)
+	{
+		printf("Height or width cannot be 0.");
+		return -1;
 	}
 	return 0;
-}// End of arg_check()
-
-// Print argument usage
-void print_help()
-{
-	printf("\nUsage:\t ./GOLOMP OPTIONS\n");
-	printf("\tOPTIONS:\n");
-	printf("\t\t-n  Number Of Threads\n");
-	printf("\t\t-h  Set Board Height(Raws)\n");
-	printf("\t\t-w  Set Board Width(Columns)\n");
-	printf("\t\t-f  Input File\n");
-	printf("\t\t-b  Bench Mode\n\n");
 }
-/* ---------------------End of functions Code------------------- */
+
+void allocatBoardMemory(int** inputboard){
+	int i;
+
+	inputboard = (int **) malloc(width*sizeof(int *));
+
+	for (i = 0; i < width; i++){
+		inputboard[i] = (int *) malloc(height*sizeof(int));
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	int **curptr, **nextptr, **temp;
+
+	int i, tid;
+	unsigned int start, finish;
+
+	height = 0;
+	width = 0;
+	filename = NULL;
+	nthreads = 1;
+
+	if (cmdArgCheck(argc, argv) != 0)
+		return -1;
+
+	allocatBoardMemory(workingBoard);
+	allocatBoardMemory(finalBoard);
+
+	curptr = workingBoard;
+	nextptr = finalBoard;
+
+	initialize_board(curptr);
+
+	read_file(curptr, filename, width, height);
+
+	copy_region(curptr, nextptr);
+
+#pragma omp parallel shared(curptr, nextptr, temp, nthreads) private(tid, i) num_threads(nthreads)
+	{
+		tid = omp_get_thread_num();
+
+		start = tid * (height / nthreads);
+		finish = start + (height / nthreads);
+
+		if (tid == 0) start++;
+		if (tid == nthreads - 1) finish = height - 1;
+
+		for (i = 0; i<rounds; i++)
+		{
+			play(curptr, nextptr, start, finish);
+
+#pragma omp barrier
+
+			if (tid == 0)
+			{
+					temp = curptr;
+					curptr = nextptr;
+					nextptr = temp;
+			}
+
+
+#pragma omp barrier
+
+		}
+	}
+
+	return 0;
+}
+
+
+
+
+
+
+
+
