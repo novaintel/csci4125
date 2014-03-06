@@ -1,4 +1,16 @@
-#include "Kakro.h"
+#include <iostream>
+#include <fstream>
+
+struct sumNode {
+	int rightSum;
+	int downSum;
+	int isSum;
+};
+
+void loadPuzzel(char* fileName);
+void createArrays(int width, int height);
+void deletArrays();
+
 
 using namespace std;
 
@@ -7,9 +19,12 @@ int** solution;
 int width, height;
 
 
-int main(char** args, int c){
+int main(int argc, char *argv[]){
 
-	
+	if (argc <= 1)
+		return -1;
+
+	loadPuzzel(argv[1]);
 	return 0;
 }
 
@@ -21,7 +36,8 @@ bool checkCell(int i, int currentWidth, int currentHeight){
 void nextEmptyLocation(int* currentWidth, int* currentHeight){
 	if (*currentWidth + 1 < width || *currentHeight + 1< height){
 		if (*currentWidth - 1 >= 0 || *currentHeight - 1 >= 0){
-			if (*currentWidth + 1 )
+			if (*currentWidth + 1)
+				return;
 		}
 	}
 }
@@ -43,6 +59,7 @@ bool solve(int currentWidth, int currentHeight){
 				return false;
 			}
 	}
+	return false;
 }
 
 void createArrays(int width, int height){
@@ -92,10 +109,11 @@ void loadPuzzel(char* fileName){
 
 	FILE * input_values;
 
-	input_values = fopen("text.txt", "r");
+	input_values = fopen(fileName, "r");
 
 	if (input_values == NULL) {
 		fprintf(stderr, "Error! Could not open file.\n");
+		return;
 	}
 
 	int fileWidth, fileHeight;
@@ -115,16 +133,17 @@ void loadPuzzel(char* fileName){
 
 	int sum;
 
-//	fscanf(input_values, "%d", &sum);
+	fscanf(input_values, "%d", &sum);
 	while (sum != EOF) {
-		fscanf(input_values, "%d", &sum);
+		
 		sums[i][j].rightSum = sum;
 		fscanf(input_values, "%d", &sum);
 		sums[i][j].downSum = sum;
 		if (i++ == (width - 1)){
 			i = 0;
 			j++;
-		}																																
+		}
+		fscanf(input_values, "%d", &sum);
 	}
 
 	fclose(input_values);

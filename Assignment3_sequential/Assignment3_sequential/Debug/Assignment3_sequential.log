@@ -1,4 +1,4 @@
-﻿Build started 2014-03-04 4:04:15 PM.
+﻿Build started 2014-03-06 1:04:31 PM.
      1>Project "C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Assignment3_sequential\Assignment3_sequential.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP Kakro_Seq.cpp
@@ -14,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.86
+Time Elapsed 00:00:00.92
