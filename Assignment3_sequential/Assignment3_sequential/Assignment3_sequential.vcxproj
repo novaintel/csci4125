@@ -13,9 +13,6 @@
   <ItemGroup>
     <ClCompile Include="Kakro_Seq.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Kakro.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9D271316-6F41-458F-A90E-7547BBFA03A1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

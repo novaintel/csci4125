@@ -4,7 +4,7 @@
 struct sumNode {
 	int rightSum;
 	int downSum;
-	int isSum;
+	bool solLocation;
 };
 
 void loadPuzzel(char* fileName);
@@ -29,7 +29,35 @@ int main(int argc, char *argv[]){
 }
 
 bool checkCell(int i, int currentWidth, int currentHeight){
+	int i;
+	int startWidth;
+	int startHeight;
+	if (i < 1 || i > 9)
+		return false;
+	if (currentWidth > width || currentHeight > height)
+		return false;
+	for (i = 0; i < currentWidth; i++){
+		if ((sums[i][currentHeight].solLocation) == false){
+			if (sums[i][currentHeight].rightSum != 0)
+				startWidth = i;
+		}
 
+	}
+	for (i = 0; i < currentHeight; i++){
+		if ((sums[currentWidth][i].solLocation) == false){
+			if (sums[currentWidth][i].downSum != 0)
+				startHeight = i;
+		}
+	}
+
+	for (i = startWidth; i < currentWidth; i++){
+		if (i == solution[i][currentHeight])
+			return false;
+	}
+	for (i = startHeight; i < currentHeight; i++){
+		if (i == solution[currentWidth][i])
+			return false;
+	}
 	return true;
 }
 
@@ -68,6 +96,14 @@ void createArrays(int width, int height){
 	for (i = 0; i < width; i++)
 	{
 		sums[i] = (sumNode*)malloc(height*sizeof(sumNode));
+	}
+
+	for (i = 0; i < width; i++){
+		for (j = 0; j < height; j++){
+			sums[i][j].downSum = 0;
+			sums[i][j].solLocation = true;
+			sums[i][j].rightSum = 0;
+		}
 	}
 
 	solution = (int**)malloc(width*sizeof(int*));
@@ -117,7 +153,7 @@ void loadPuzzel(char* fileName){
 	}
 
 	int fileWidth, fileHeight;
-	int i, j;
+	int i = 0, j = 0;
 
 	fscanf(input_values, "%d", &fileWidth);
 	fscanf(input_values, "%d", &fileHeight);
@@ -135,14 +171,19 @@ void loadPuzzel(char* fileName){
 
 	fscanf(input_values, "%d", &sum);
 	while (sum != EOF) {
-		
-		sums[i][j].rightSum = sum;
-		fscanf(input_values, "%d", &sum);
+		if (sum == -1){
+			sums[i][j].solLocation = true;
+		}
 		sums[i][j].downSum = sum;
+		fscanf(input_values, "%d", &sum);
+		sums[i][j].rightSum = sum;
 		if (i++ == (width - 1)){
 			i = 0;
 			j++;
 		}
+		if (sums[i][j].downSum == 0 && sums[i][j].rightSum == 0)
+			solution[i][j] = -1;
+
 		fscanf(input_values, "%d", &sum);
 	}
 
