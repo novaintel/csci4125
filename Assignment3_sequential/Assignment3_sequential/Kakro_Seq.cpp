@@ -28,11 +28,12 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-bool checkCell(int i, int currentWidth, int currentHeight){
+bool checkCell(int callValue, int currentWidth, int currentHeight){
 	int i;
+	int count;
 	int startWidth;
 	int startHeight;
-	if (i < 1 || i > 9)
+	if (callValue < 1 || callValue > 9)
 		return false;
 	if (currentWidth > width || currentHeight > height)
 		return false;
@@ -49,24 +50,38 @@ bool checkCell(int i, int currentWidth, int currentHeight){
 				startHeight = i;
 		}
 	}
-
-	for (i = startWidth; i < currentWidth; i++){
+	count = callValue;
+	for (i = startWidth; i < startWidth + 9; i++){
 		if (i == solution[i][currentHeight])
 			return false;
+		count += solution[i][currentHeight];
 	}
-	for (i = startHeight; i < currentHeight; i++){
+	if (count > sums[startWidth][currentHeight].rightSum)
+		return false;
+	count = callValue;
+	for (i = startHeight; i < startHeight + 9; i++){
 		if (i == solution[currentWidth][i])
 			return false;
+		count += solution[i][currentHeight];
 	}
+	if (count > sums[currentWidth][startHeight].downSum)
+		return false;
 	return true;
 }
 
 void nextEmptyLocation(int* currentWidth, int* currentHeight){
 	if (*currentWidth + 1 < width || *currentHeight + 1< height){
-		if (*currentWidth - 1 >= 0 || *currentHeight - 1 >= 0){
-			if (*currentWidth + 1)
-				return;
+		if (*currentWidth - 1 > 0 || *currentHeight - 1 > 0){
+			if (sums[*currentWidth + 1][*currentHeight].solLocation == true && solution[*currentWidth + 1][*currentHeight] != 0)
+				currentWidth++;
+			else if (sums[*currentWidth][*currentHeight + 1].solLocation == true && solution[*currentWidth][*currentHeight + 1] != 0)
+				currentHeight++;
+			else if (sums[*currentWidth - 1][*currentHeight].solLocation == true && solution[*currentWidth - 1][*currentHeight] != 0)
+				currentHeight--;
+			else if (sums[*currentWidth][*currentHeight - 1].solLocation == true && solution[*currentWidth][*currentHeight - 1] != 0)
+				currentHeight--;
 		}
+		
 	}
 }
 
@@ -101,7 +116,7 @@ void createArrays(int width, int height){
 	for (i = 0; i < width; i++){
 		for (j = 0; j < height; j++){
 			sums[i][j].downSum = 0;
-			sums[i][j].solLocation = true;
+			sums[i][j].solLocation = false;
 			sums[i][j].rightSum = 0;
 		}
 	}
