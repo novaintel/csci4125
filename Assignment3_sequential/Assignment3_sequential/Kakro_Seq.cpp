@@ -1,207 +1,190 @@
 #include <iostream>
 #include <fstream>
-
-struct sumNode {
-	int rightSum;
-	int downSum;
-	bool solLocation;
-};
-
-void loadPuzzel(char* fileName);
-void createArrays(int width, int height);
-void deletArrays();
-
+#include <vector>
 
 using namespace std;
 
-sumNode** sums;
-int** solution;
+struct board {
+	int rightSum;
+	int downSum;
+	int cellValue;
+	bool noValue;
+};
+
+struct location{
+	int width;
+	int height;
+};
+
 int width, height;
 
+location Start;
+
+bool solve(location currentLocation, vector<vector<board>> currentBoard);
+vector<vector<board>> loadFile(char* fileName);
 
 int main(int argc, char *argv[]){
+	width = 0;
+	height = 0;
+
+	vector<vector<board>> currentBoard;
 
 	if (argc <= 1)
 		return -1;
 
-	loadPuzzel(argv[1]);
+	currentBoard = loadFile(argv[1]);
+	solve(Start, currentBoard);
+
 	return 0;
+
 }
 
-bool checkCell(int callValue, int currentWidth, int currentHeight){
-	int i;
-	int count;
-	int startWidth;
-	int startHeight;
-	if (callValue < 1 || callValue > 9)
-		return false;
-	if (currentWidth > width || currentHeight > height)
-		return false;
-	for (i = 0; i < currentWidth; i++){
-		if ((sums[i][currentHeight].solLocation) == false){
-			if (sums[i][currentHeight].rightSum != 0)
-				startWidth = i;
-		}
+location nextEmptyLocation(location currentLocation, vector<vector<board>> currentBoard){
+	location newLocation;
+	int cWidth = currentLocation.width;
+	int cHeight = currentLocation.height;
 
-	}
-	for (i = 0; i < currentHeight; i++){
-		if ((sums[currentWidth][i].solLocation) == false){
-			if (sums[currentWidth][i].downSum != 0)
-				startHeight = i;
+	if (cWidth + 1 != width){
+		if (cHeight + 1 != height){
+			if (currentBoard[cWidth + 1][cHeight].noValue || currentBoard[cWidth + 1][cHeight].cellValue != 0){
+				newLocation.width = cWidth + 1;
+				newLocation.height = cHeight;
+				return newLocation;
+			}
+			else if (currentBoard[cWidth][cHeight + 1].noValue || currentBoard[cWidth][cHeight + 1].cellValue != 0){
+				newLocation.width = cWidth;
+				newLocation.height = cHeight + 1;
+				return newLocation;
+			}
+			else if (cWidth - 1 >= 0){
+				if (currentBoard[cWidth - 1][cHeight].noValue || currentBoard[cWidth - 1][cHeight].cellValue != 0){
+					newLocation.width = cWidth - 1;
+					newLocation.height = cHeight;
+					return newLocation;
+				}
+			}
+			else if (cHeight - 1 >= 0){
+				if (currentBoard[cWidth][cHeight - 1].noValue || currentBoard[cWidth][cHeight - 1].cellValue != 0){
+					newLocation.width = cWidth;
+					newLocation.height = cHeight - 1;
+					return newLocation;
+				}
+			}
 		}
 	}
-	count = callValue;
-	for (i = startWidth; i < startWidth + 9; i++){
-		if (i == solution[i][currentHeight])
-			return false;
-		count += solution[i][currentHeight];
+	return currentLocation;
+}
+
+bool checkCell(int val, location currentLocation, vector<vector<board>> currentBoard){
+	int startWidth = 0;
+	int startHeight = 0;
+	int sum = 0;
+	
+	for (int i = currentLocation.width; i >= 0; i--){
+		if (currentBoard[i][currentLocation.height].rightSum != 0)
+			startWidth = i;
 	}
-	if (count > sums[startWidth][currentHeight].rightSum)
-		return false;
-	count = callValue;
-	for (i = startHeight; i < startHeight + 9; i++){
-		if (i == solution[currentWidth][i])
-			return false;
-		count += solution[i][currentHeight];
+	for (int i = currentLocation.height; i >= 0; i--){
+		if (currentBoard[currentLocation.width][i].downSum != 0)
+			startHeight = i;
 	}
-	if (count > sums[currentWidth][startHeight].downSum)
+
+	for (int i = startWidth + 1; i <= startWidth + 9; i++){
+		if (currentBoard[i][currentLocation.height].cellValue == val)
+			return false;
+		sum += currentBoard[i][currentLocation.height].cellValue;
+	}
+	if (sum + val > currentBoard[startWidth][currentLocation.height].rightSum)
 		return false;
+
+	sum = 0;
+	for (int i = startHeight + 1; i <= startHeight + 9; i++){
+		if (currentBoard[currentLocation.width][i].cellValue == val)
+			return false;
+		sum += currentBoard[currentLocation.width][i].cellValue;
+	}
+	if (sum + val > currentBoard[currentLocation.width][startHeight].downSum)
+		return false;
+
 	return true;
 }
 
-void nextEmptyLocation(int* currentWidth, int* currentHeight){
-	if (*currentWidth + 1 < width || *currentHeight + 1< height){
-		if (*currentWidth - 1 > 0 || *currentHeight - 1 > 0){
-			if (sums[*currentWidth + 1][*currentHeight].solLocation == true && solution[*currentWidth + 1][*currentHeight] != 0)
-				currentWidth++;
-			else if (sums[*currentWidth][*currentHeight + 1].solLocation == true && solution[*currentWidth][*currentHeight + 1] != 0)
-				currentHeight++;
-			else if (sums[*currentWidth - 1][*currentHeight].solLocation == true && solution[*currentWidth - 1][*currentHeight] != 0)
-				currentHeight--;
-			else if (sums[*currentWidth][*currentHeight - 1].solLocation == true && solution[*currentWidth][*currentHeight - 1] != 0)
-				currentHeight--;
-		}
-		
-	}
-}
-
-bool solve(int currentWidth, int currentHeight){
-	int i;
-	if (currentWidth == width && currentHeight == height){ // puzzle has been solved
+bool solve(location currentLocation, vector<vector<board>> currentBoard){
+	if (currentLocation.width == (width - 1) && currentLocation.height == (height - 1)){  // puzzle has been solved
 		//display();
 		return true;
 	}
-	else {
-		for (i = 1; i <= 9; i++)
-			if (checkCell(i, currentWidth, currentHeight)){ //meaning that row, col and no duplicates conditions are met
-				solution[currentWidth][currentHeight] = i;
-				nextEmptyLocation(&currentWidth, &currentWidth);
-				return solve(currentWidth, currentHeight);
+	else{
+		for (int i = 1; i <= 9; i++){
+			if (checkCell(i, currentLocation, currentBoard)){ //meaning that row, col and no duplicates conditions are met
+				currentBoard[currentLocation.width][currentLocation.height].cellValue = 0;
+				return solve(nextEmptyLocation(currentLocation, currentBoard), currentBoard);
 			}
-			else {
-				return false;
-			}
+			else return false;
+		}
 	}
 	return false;
 }
 
-void createArrays(int width, int height){
-	sums = (sumNode**)malloc(width*sizeof(sumNode*));
-	int i, j;
-	for (i = 0; i < width; i++)
-	{
-		sums[i] = (sumNode*)malloc(height*sizeof(sumNode));
-	}
-
-	for (i = 0; i < width; i++){
-		for (j = 0; j < height; j++){
-			sums[i][j].downSum = 0;
-			sums[i][j].solLocation = false;
-			sums[i][j].rightSum = 0;
-		}
-	}
-
-	solution = (int**)malloc(width*sizeof(int*));
-
-	for (i = 0; i < width; i++)
-	{
-		solution[i] = (int*)malloc(height*sizeof(int));
-	}
-
-	for (i = 0; i < width; i++){
-		for (j = 0; j < height; j++){
-			solution[i][j] = 0;
-		}
-	}
-}
-
-void deletArrays(){
-	int i;
-	int width = sizeof(sums) / sizeof(sumNode);
-
-	for (i = 0; i<width; i++)
-	{
-		free(sums[i]);
-	}
-
-	free(sums);
-
-	width = sizeof(solution) / sizeof(int);
-
-	for (i = 0; i<width; i++)
-	{
-		free(solution[i]);
-	}
-
-	free(solution);
-}
-
-void loadPuzzel(char* fileName){
-
-	FILE * input_values;
-
-	input_values = fopen(fileName, "r");
-
-	if (input_values == NULL) {
-		fprintf(stderr, "Error! Could not open file.\n");
-		return;
-	}
-
-	int fileWidth, fileHeight;
+vector<vector<board>> loadFile(char* fileName){
+	vector<vector<board>> fileBoard;
+	int number;
 	int i = 0, j = 0;
 
-	fscanf(input_values, "%d", &fileWidth);
-	fscanf(input_values, "%d", &fileHeight);
+	bool boardWidth = true;
+	bool boardSize = true;
+	bool b1 = true;
+	bool firstSport;
 
-	if (fileWidth != 0 && fileHeight != 0){
-		width = fileWidth;
-		height = fileHeight;
-	}
-	else
-		return;
+	ifstream file_handler(fileName);
 
-	createArrays(width, height);
-
-	int sum;
-
-	fscanf(input_values, "%d", &sum);
-	while (sum != EOF) {
-		if (sum == -1){
-			sums[i][j].solLocation = true;
+	while (file_handler >> number) {
+		if (number != 0 && boardSize){
+			if (boardWidth){
+				width = number;
+				boardWidth = false;
+				continue;
+			}
+			else{
+				height = number;
+				fileBoard.resize(width);
+				for (int i = 0; i < width; ++i)
+					fileBoard[i].resize(height);
+				boardSize = false;
+				continue;
+			}
 		}
-		sums[i][j].downSum = sum;
-		fscanf(input_values, "%d", &sum);
-		sums[i][j].rightSum = sum;
-		if (i++ == (width - 1)){
-			i = 0;
-			j++;
-		}
-		if (sums[i][j].downSum == 0 && sums[i][j].rightSum == 0)
-			solution[i][j] = -1;
 
-		fscanf(input_values, "%d", &sum);
+		if (number == -1){
+			if (firstSport){
+				Start.width = i;
+				Start.height = j;
+				firstSport = false;
+			}
+			fileBoard[i][j].rightSum = 0;
+			fileBoard[i][j].downSum = 0;
+			fileBoard[i][j].cellValue = 0;
+			fileBoard[i][j].noValue = false;
+		}
+		else if (b1){
+			fileBoard[i][j].downSum = number;
+			fileBoard[i][j].cellValue = 0;
+			fileBoard[i][j].noValue = true;
+			b1 = false;
+			continue;
+		}
+		else if (!b1){
+			fileBoard[i][j].rightSum = number;
+			fileBoard[i][j].cellValue = 0;
+			fileBoard[i][j].noValue = true;
+			b1 = true;
+		}
+
+		if (j++ == (width - 1)){
+			j = 0;
+			i++;
+		}
 	}
 
-	fclose(input_values);
-
+	return fileBoard;
 }

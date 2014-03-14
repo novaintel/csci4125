@@ -1,17 +1,13 @@
-﻿Build started 2014-03-06 1:17:42 PM.
-     1>Project "C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Assignment3_sequential\Assignment3_sequential.vcxproj" on node 2 (Build target(s)).
+﻿Build started 2014-03-13 11:08:25 PM.
+     1>Project "C:\Users\James\Documents\code\School\csci4125\Assignment3_sequential\Assignment3_sequential\Assignment3_sequential.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP Kakro_Seq.cpp
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\icl.exe /c /Qvc12 /Qlocation,link,"D:\DevTools\Microsoft Visual Studio 12.0\VC\bin" /ZI /nologo /W3 /Od /Qftz- /D __INTEL_COMPILER=1400 /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /EHsc /RTC1 /MDd /GS /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP Kakro_Seq.cpp
          Kakro_Seq.cpp
        Link:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment3_sequential.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.lib" /MACHINE:X86 Debug\Kakro_Seq.obj
+         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\School\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment3_sequential.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\School\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\School\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.lib" /MACHINE:X86 Debug\Kakro_Seq.obj
          xilink: executing 'link'
-       LinkEmbedManifest:
-         C:\Program Files (x86)\Intel\Composer XE 2013 SP1\bin\ia32\xilink.exe /OUT:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Assignment3_sequential.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.lib" /MACHINE:X86 Debug\Kakro_Seq.obj
-         xilink: executing 'link'
-         Assignment3_sequential.vcxproj -> C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Debug\Assignment3_sequential.exe
-     1>Done Building Project "C:\Users\James\Documents\code\school\csci4125\Assignment3_sequential\Assignment3_sequential\Assignment3_sequential.vcxproj" (Build target(s)).
+     1>Done Building Project "C:\Users\James\Documents\code\School\csci4125\Assignment3_sequential\Assignment3_sequential\Assignment3_sequential.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.96
+Time Elapsed 00:00:00.84
