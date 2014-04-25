@@ -31,13 +31,8 @@ int main(int argc, const char *argv[])
 	inputFile.close(); 												// Close input file
 	vvs tableInfo = generateTableInfo(dataTable);					// Stores all the attributes and their values in a vector of vector of strings named tableInfo
 	node* root = new node;											// Declare and assign memory for the root node of the Decision Tree
-
-#pragma omp parallel
-	{
-
-		root = buildDecisionTree(dataTable, root, tableInfo);			// Recursively build and train decision tree
-
-	}
+	root->isRoot = true;
+	root = buildDecisionTree(dataTable, root, tableInfo);			// Recursively build and train decision tree
 	string defaultClass = returnMostFrequentClass(dataTable);		// Stores the most frequent class in the training data. This is used as the default class label
 	dataTable.clear(); 												// clear dataTable of training data to store testing data
 

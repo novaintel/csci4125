@@ -75,9 +75,9 @@ vvs pruneTable(vvs &attributeTable, string &colName, string value)
 }
 
 /*
-* Recursively builds the decision tree based on
-* the data that it is passed and tha table info.
-*/
+ * Recursively builds the decision tree based on
+ * the data that it is passed and tha table info.
+ */
 node* buildDecisionTree(vvs &table, node* nodePtr, vvs &tableInfo)
 {
 	if (tableIsEmpty(table)) {
@@ -85,39 +85,21 @@ node* buildDecisionTree(vvs &table, node* nodePtr, vvs &tableInfo)
 	}
 	if (isHomogeneous(table)) {
 		nodePtr->isLeaf = true;
-		nodePtr->label = table[1][table[1].size() - 1];
+		nodePtr->label = table[1][table[1].size()-1];
 		return nodePtr;
-	}
-	else {
+	} else {
 		string splittingCol = decideSplittingColumn(table);
 		nodePtr->splitOn = splittingCol;
 		int colIndex = returnColumnIndex(splittingCol, tableInfo);
 		int iii;
-		#pragma omp single nowait
 		for (iii = 1; iii < tableInfo[colIndex].size(); iii++) {
 			node* newNode = (node*) new node;
 			newNode->label = tableInfo[colIndex][iii];
 			nodePtr->childrenValues.push_back(tableInfo[colIndex][iii]);
-			int childValuesLocation = nodePtr->childrenValues.size() - 1;
 			newNode->isLeaf = false;
 			newNode->splitOn = splittingCol;
 			vvs auxTable = pruneTable(table, splittingCol, tableInfo[colIndex][iii]);
-
-			node* childNode;
-
-#pragma omp task firstprivate(auxTable)
-			{
-				childNode = buildDecisionTree(auxTable, newNode, tableInfo);
-			}
-		
-#pragma omp critical
-			{
-				if (childNode != NULL)
-					nodePtr->children.insert(nodePtr->children.begin() + childValuesLocation, childNode);
-				else{
-					nodePtr->childrenValues.pop_back();
-				}
-			}
+			nodePtr->children.push_back(buildDecisionTree(auxTable, newNode, tableInfo));
 		}
 	}
 	return nodePtr;
@@ -190,40 +172,43 @@ string decideSplittingColumn(vvs &table)
 	double minEntropy = DBL_MAX;
 	int splittingColumn = 0;
 	vi entropies;
-	#pragma omp for
-	for (column = 0; column < table[0].size() - 1; column++) {
-		string colName = table[0][column];
-		msi tempMap;
-		vi counts = countDistinct(table, column);
-		vd attributeEntropy;
-		double columnEntropy = 0.0;
+#pragma omp parallel
+	{
+#pragma omp for
+		for (column = 0; column < table[0].size() - 1; column++) {
+			string colName = table[0][column];
+			msi tempMap;
+			vi counts = countDistinct(table, column);
+			vd attributeEntropy;
+			double columnEntropy = 0.0;
 
-		for (iii = 1; iii < table.size() - 1; iii++) {
-			double entropy = 0.0;
-			if (tempMap.find(table[iii][column]) != tempMap.end()) { 	// IF ATTRIBUTE IS ALREADY FOUND IN A COLUMN, UPDATE IT'S FREQUENCY
-				tempMap[table[iii][column]]++;
-			}
-			else { 							// IF ATTRIBUTE IS FOUND FOR THE FIRST TIME IN A COLUMN, THEN PROCESS IT AND CALCULATE IT'S ENTROPY
-				tempMap[table[iii][column]] = 1;
-				vvs tempTable = pruneTable(table, colName, table[iii][column]);
-				vi classCounts = countDistinct(tempTable, tempTable[0].size() - 1);
-				int jjj, kkk;
-				for (jjj = 0; jjj < classCounts.size(); jjj++) {
-					double temp = (double)classCounts[jjj];
-					entropy -= (temp / classCounts[classCounts.size() - 1])*(log(temp / classCounts[classCounts.size() - 1]) / log(2));
+			for (iii = 1; iii < table.size() - 1; iii++) {
+				double entropy = 0.0;
+				if (tempMap.find(table[iii][column]) != tempMap.end()) { 	// IF ATTRIBUTE IS ALREADY FOUND IN A COLUMN, UPDATE IT'S FREQUENCY
+					tempMap[table[iii][column]]++;
 				}
-				attributeEntropy.push_back(entropy);
-				entropy = 0.0;
+				else { 							// IF ATTRIBUTE IS FOUND FOR THE FIRST TIME IN A COLUMN, THEN PROCESS IT AND CALCULATE IT'S ENTROPY
+					tempMap[table[iii][column]] = 1;
+					vvs tempTable = pruneTable(table, colName, table[iii][column]);
+					vi classCounts = countDistinct(tempTable, tempTable[0].size() - 1);
+					int jjj, kkk;
+					for (jjj = 0; jjj < classCounts.size(); jjj++) {
+						double temp = (double)classCounts[jjj];
+						entropy -= (temp / classCounts[classCounts.size() - 1])*(log(temp / classCounts[classCounts.size() - 1]) / log(2));
+					}
+					attributeEntropy.push_back(entropy);
+					entropy = 0.0;
+				}
 			}
-		}
-		//for (iii = 0; iii < counts.size() - 1 && ((attributeEntropy.size() - 1) == (counts.size() - 1)); iii++) {
-		for (iii = 0; iii < counts.size() - 1; iii++) {
-			columnEntropy += ((double)counts[iii] * (double)attributeEntropy[iii]);
-		}
-		columnEntropy = columnEntropy / ((double)counts[counts.size() - 1]);
-		if (columnEntropy <= minEntropy) {
-			minEntropy = columnEntropy;
-			splittingColumn = column;
+			//for (iii = 0; iii < counts.size() - 1 && ((attributeEntropy.size() - 1) == (counts.size() - 1)); iii++) {
+			for (iii = 0; iii < counts.size() - 1; iii++) {
+				columnEntropy += ((double)counts[iii] * (double)attributeEntropy[iii]);
+			}
+			columnEntropy = columnEntropy / ((double)counts[counts.size() - 1]);
+			if (columnEntropy <= minEntropy) {
+				minEntropy = columnEntropy;
+				splittingColumn = column;
+			}
 		}
 	}
 	return table[0][splittingColumn];

@@ -18,6 +18,7 @@ typedef vector<double> vd;
 
 struct node													// struct node defines the structure of a node of the decision tree
 {
+	bool isRoot;
 	string splitOn;											// Stores which attribute to split on at a particular node
 	string label;											// Stores the class label for leaf nodes. For nodes that are not leaf nodes, it stores the value of the attribute of the parent's' split 
 	bool isLeaf;											// boolean flag for leaf nodes
